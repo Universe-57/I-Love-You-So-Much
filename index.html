@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html>
 <head>
 <title>Confession Wall</title>
@@ -14,7 +14,6 @@ body{
   overflow-x: hidden;
 }
 
-/* stars background */
 body::before{
   content:"";
   position:fixed;
@@ -34,8 +33,6 @@ body::before{
 .container{
   margin-top:80px;
 }
-
-/* text box */
 textarea{
   width:80%;
   height:120px;
@@ -44,8 +41,6 @@ textarea{
   padding:12px;
   font-size:16px;
 }
-
-/* star button */
 .star-btn{
   margin-top:20px;
   width:110px;
@@ -59,7 +54,6 @@ textarea{
     50% 70%,21% 91%,32% 57%,2% 35%,39% 35%
   );
 }
-
 .message{
   background:rgba(255,255,255,0.1);
   margin:12px auto;
@@ -73,13 +67,11 @@ textarea{
 <body>
 
 <div class="container">
-
 <h1>🌙 Anonymous Confession Wall</h1>
 
 <textarea id="confession" placeholder="Write your confession..."></textarea>
 <br>
 <button class="star-btn" onclick="sendConfession()">SEND</button>
-
 <div id="messages"></div>
 
 </div>
@@ -88,7 +80,6 @@ textarea{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 🔹 Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBu8N9Ou68EdqfuUIfCYTHrZKN45Cczdsw",
   authDomain: "confession-wall-8f338.firebaseapp.com",
@@ -99,40 +90,30 @@ const firebaseConfig = {
   measurementId: "G-LMGVLM3W20"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Send confession to Firestore
 async function sendConfession() {
   let text = document.getElementById("confession").value;
-  if (text === "") {
-    alert("Write something first!");
-    return;
-  }
+  if (!text) { alert("Write something first!"); return; }
 
   await addDoc(collection(db, "confessions"), { message: text });
-
   alert("Confession sent!");
   document.getElementById("confession").value = "";
   loadMessages();
 }
 
-// Load all messages from Firestore
 async function loadMessages() {
-  let wall = document.getElementById("messages");
+  const wall = document.getElementById("messages");
   wall.innerHTML = "";
-
-  const querySnapshot = await getDocs(collection(db, "confessions"));
-  querySnapshot.forEach((doc) => {
-    let msg = document.createElement("div");
+  const snapshot = await getDocs(collection(db, "confessions"));
+  snapshot.forEach(doc => {
+    const msg = document.createElement("div");
     msg.className = "message";
     msg.innerText = doc.data().message;
     wall.prepend(msg);
   });
 }
-
-// Load messages on page load
 loadMessages();
 </script>
 
